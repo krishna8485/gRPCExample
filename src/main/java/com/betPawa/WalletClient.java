@@ -118,7 +118,18 @@ public class WalletClient {
             client.withdraw("2", "100", "GBP");
             client.withdraw("2", "100", "GBP");
             client.withdraw("2", "100", "GBP");
-           
+
+            logger.info("**********************************************");
+
+            client.getBalance("3");
+            client.desposit("3", "100", "USD");
+            client.desposit("3", "100", "USD");
+            client.withdraw("3", "100", "USD");
+            client.desposit("3", "100", "USD");
+            client.getBalance("3");
+            client.withdraw("3", "200", "USD");
+            client.getBalance("3");
+
         } finally {
             client.shutdown();
         }
