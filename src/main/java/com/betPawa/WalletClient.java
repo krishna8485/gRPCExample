@@ -3,13 +3,13 @@ package com.betPawa;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class WalletClient {
-    private static final Logger logger = Logger.getLogger(WalletClient.class.getName());
+    private static final Logger logger = Logger.getLogger(WalletClient.class);
 
     private final ManagedChannel channel;
     private final WalletGrpc.WalletBlockingStub blockingStub;
@@ -34,17 +34,52 @@ public class WalletClient {
     }
 
     /** Say hello to server. */
-    public void greet(String name) {
-        logger.info("Will try to greet " + name + " ...");
-        HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-        HelloReply response;
+    public void desposit(String userId, String amount, String currency) {
+        //logger.info("Will try to greet " + name + " ...");
+        /*HelloRequest request = HelloRequest.newBuilder().setName(name).build();
+        HelloReply response;*/
+        DepositRequest depositRequest = DepositRequest.newBuilder().setUserId(userId).setAmount(amount).setCurrency(currency).build();
+
+
+        //WithdrawRequest withdrawRequest = WithdrawRequest.newBuilder().setUserId("Balu").build();
+
+
         try {
-            response = blockingStub.sayHello(request);
+            //response = blockingStub.sayHello(request);
+            com.google.protobuf.Empty empty = blockingStub.deposit(depositRequest);
         } catch (StatusRuntimeException e) {
-            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            logger.warn("RPC failed: "+ e.getStatus());
             return;
         }
-        logger.info("Greeting: " + response.getMessage());
+        //logger.info("Greeting: " + response.getMessage());
+        //logger.info("Deposited :" + depositResponse.getMessage());
+    }
+
+    public void withdraw(String userId, String amount, String currency) {
+        WithdrawRequest withdrawRequest = WithdrawRequest.newBuilder().setUserId(userId).setAmount(amount).setCurrency(currency).build();
+
+
+        try {
+            com.google.protobuf.Empty Empty = blockingStub.withdraw(withdrawRequest);
+        } catch (StatusRuntimeException e) {
+            logger.warn("RPC failed: "+ e.getStatus());
+            return;
+        }
+        logger.info("Withdraw : Success");
+    }
+
+    public void getBalance(String userId) {
+        BalanceRequest balanceRequest = BalanceRequest.newBuilder().setUserId(userId).build();
+
+        BalanceResponse balanceResponse = null;
+        try {
+            balanceResponse = blockingStub.getBalance(balanceRequest);
+
+        } catch (StatusRuntimeException e) {
+            logger.warn("RPC failed: "+ e.getStatus());
+            return;
+        }
+        logger.info(balanceResponse.getMessage());
     }
 
     /**
@@ -59,7 +94,32 @@ public class WalletClient {
             if (args.length > 0) {
                 user = args[0]; /* Use the arg as the name to greet if provided */
             }
-            client.greet(user);
+            /*Make a withdrawal of USD 200 for user with id 1. Must return "insufficient_funds".
+                    Make a deposit of USD 100 to user with id 1.
+            Check that all balances are correct
+            Make a withdrawal of USD 200 for user with id 1. Must return "insufficient_funds".
+                    Make a deposit of EUR 100 to user with id 1.
+            Check that all balances are correct
+            Make a withdrawal of USD 200 for user with id 1. Must return "insufficient_funds".
+                    Make a deposit of USD 100 to user with id 1.
+            Check that all balances are correct
+            Make a withdrawal of USD 200 for user with id 1. Must return "ok".
+                    Check that all balances are correct
+            Make a withdrawal of USD 200 for user with id 1. Must return "insufficient_funds".*/
+
+            client.withdraw("1", "200", "USD");
+            client.desposit("1", "100", "USD");
+            client.getBalance("1");
+            client.withdraw("1", "200", "USD");
+            client.desposit("1", "100", "EUR");
+            client.getBalance("1");
+            client.withdraw("1", "200", "USD");
+            client.desposit("1", "100", "USD");
+            client.getBalance("1");
+            client.withdraw("1", "200", "USD");
+            client.getBalance("1");
+            client.withdraw("1", "200", "USD");
+           //client.withdraw();
         } finally {
             client.shutdown();
         }

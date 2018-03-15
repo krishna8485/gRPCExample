@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BetPawa_Example.iml" filepath="$PROJECT_DIR$/.idea/modules/BetPawa_Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BetPawa_Example_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BetPawa_Example_main.iml" group="BetPawa_Example" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BetPawa_Example_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BetPawa_Example_test.iml" group="BetPawa_Example" />
+    </modules>
+  </component>
+</project>

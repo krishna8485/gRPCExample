@@ -1,13 +1,17 @@
  package com.betPawa;
 
+import com.betPawa.Business.WalletBusiness;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import java.io.IOException;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
-public class WalletServer {
-    private static final Logger logger = Logger.getLogger(WalletServer.class.getName());
+import java.io.IOException;
+
+import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
+
+ public class WalletServer {
+    private static final Logger logger = Logger.getLogger(WalletServer.class);
 
     private Server server;
 
@@ -56,19 +60,52 @@ public class WalletServer {
 
     static class WalletImpl extends WalletGrpc.WalletImplBase {
 
-        @Override
-        public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
-            responseObserver.onNext(reply);
-            responseObserver.onCompleted();
-        }
+
+        private WalletBusiness walletBusiness = new WalletBusiness();
+
 
         @Override
         public void deposit(com.betPawa.DepositRequest request,
-                            io.grpc.stub.StreamObserver<com.betPawa.DepositResponse> responseObserver) {
-            DepositResponse depositResponse = DepositResponse.newBuilder().setMessage("Deposited "+ request.getAmount() + "by " + request.getUserId()).build();
-            responseObserver.onNext(depositResponse);
+                            io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+            try {
+                walletBusiness.deposit(request);
+                com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+                responseObserver.onNext(empty);
+                responseObserver.onCompleted();
+            } catch (WalletBusinessException e) {
+                logger.info("Exception", e);
+                responseObserver.onError(e);
+            }
+        }
+
+        @Override
+        public void withdraw(com.betPawa.WithdrawRequest request,
+                             io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+
+            try {
+                walletBusiness.withdraw(request);
+                // withdrawResponse = WithdrawResponse.newBuilder().setMessage("Withdraw ").build();
+                com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+                responseObserver.onNext(empty);
+                responseObserver.onCompleted();
+            } catch (WalletBusinessException e) {
+                logger.info("Exception", e);
+                responseObserver.onError(e);
+
+            }
+
+
+        }
+
+        @Override
+        public void getBalance(com.betPawa.BalanceRequest request,
+                               io.grpc.stub.StreamObserver<com.betPawa.BalanceResponse> responseObserver) {
+            String message = null;
+            BalanceResponse balanceResponse = null;
+            message = walletBusiness.getBalance(request);
+            balanceResponse = BalanceResponse.newBuilder().setMessage("Balance : " + message).build();
+            responseObserver.onNext(balanceResponse);
             responseObserver.onCompleted();
         }
     }
-}
+ }
