@@ -2,6 +2,9 @@ package com.betPawa.service;
 
 import com.betPawa.WalletBusinessException;
 
+/**
+ *
+ */
 public interface TransactionService {
 
     public void deposit(String userId, double amount, String currency);

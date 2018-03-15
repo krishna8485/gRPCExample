@@ -16,7 +16,12 @@ import java.util.List;
 
 public class TransactionServiceImpl implements TransactionService {
 
-
+    /**
+     *
+     * @param userId
+     * @param amount
+     * @param currency
+     */
   public void deposit(String userId, double amount, String currency){
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -61,7 +66,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
 
-
+    /**
+     *
+     * @param userId
+     * @param amount
+     * @param currency
+     * @throws WalletBusinessException
+     */
      public void withdraw(String userId, double amount, String currency) throws WalletBusinessException {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -124,6 +135,12 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    /**
+     *
+     * @param avaiableAmount
+     * @param withDrawamount
+     * @return
+     */
     private boolean checkBalance(double avaiableAmount, double withDrawamount) {
         if(avaiableAmount >= withDrawamount ) {
             return true;
@@ -131,6 +148,11 @@ public class TransactionServiceImpl implements TransactionService {
         return false;
     }
 
+    /**
+     *
+     * @param userId
+     * @return
+     */
     @Override
     public String getBalance(String userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();

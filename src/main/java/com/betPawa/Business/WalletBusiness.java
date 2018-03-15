@@ -13,7 +13,11 @@ public class WalletBusiness {
     private static final Logger logger = Logger.getLogger(WalletBusiness.class.getName());
     private static final List<String> currencyList = Arrays.asList("EUR", "USD", "GBP");
 
-
+    /**
+     *
+     * @param request
+     * @throws WalletBusinessException
+     */
     public void deposit(com.betPawa.DepositRequest request) throws WalletBusinessException {
         String userId = null;
         String amount = null;
@@ -40,6 +44,11 @@ public class WalletBusiness {
 
     }
 
+    /**
+     *
+     * @param request
+     * @throws WalletBusinessException
+     */
     public void withdraw(com.betPawa.WithdrawRequest request) throws WalletBusinessException {
         String userId = null;
         String amount = null;
@@ -65,19 +74,20 @@ public class WalletBusiness {
 
     }
 
-
+    /**
+     *
+     * @param balanceRequest
+     * @return
+     */
     public String getBalance(com.betPawa.BalanceRequest balanceRequest){
         String userId = null;
-
-            //validate request values
+        //validate request values
             userId = balanceRequest.getUserId();
-
             if (userId != null) {
                    return transactionService.getBalance(userId);
 
             }
-
-        return "";
+            return "";
 
     }
 

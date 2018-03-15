@@ -33,26 +33,17 @@ public class WalletClient {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
 
-    /** Say hello to server. */
+
     public void desposit(String userId, String amount, String currency) {
-        //logger.info("Will try to greet " + name + " ...");
-        /*HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-        HelloReply response;*/
         DepositRequest depositRequest = DepositRequest.newBuilder().setUserId(userId).setAmount(amount).setCurrency(currency).build();
 
-
-        //WithdrawRequest withdrawRequest = WithdrawRequest.newBuilder().setUserId("Balu").build();
-
-
         try {
-            //response = blockingStub.sayHello(request);
+
             com.google.protobuf.Empty empty = blockingStub.deposit(depositRequest);
         } catch (StatusRuntimeException e) {
             logger.warn("RPC failed: "+ e.getStatus());
             return;
         }
-        //logger.info("Greeting: " + response.getMessage());
-        //logger.info("Deposited :" + depositResponse.getMessage());
     }
 
     public void withdraw(String userId, String amount, String currency) {
@@ -120,6 +111,14 @@ public class WalletClient {
             client.getBalance("1");
             client.withdraw("1", "200", "USD");
            //client.withdraw();
+
+            logger.info("**********************************************");
+            client.withdraw("2", "100", "GBP");
+            client.desposit("2", "300", "GBP");
+            client.withdraw("2", "100", "GBP");
+            client.withdraw("2", "100", "GBP");
+            client.withdraw("2", "100", "GBP");
+           
         } finally {
             client.shutdown();
         }

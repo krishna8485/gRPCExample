@@ -3,12 +3,9 @@
 import com.betPawa.Business.WalletBusiness;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.stub.StreamObserver;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
  public class WalletServer {
     private static final Logger logger = Logger.getLogger(WalletServer.class);
@@ -74,6 +71,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
                 responseObserver.onCompleted();
             } catch (WalletBusinessException e) {
                 logger.info("Exception", e);
+                System.out.println(e.getMessage());
                 responseObserver.onError(e);
             }
         }
@@ -84,12 +82,12 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
             try {
                 walletBusiness.withdraw(request);
-                // withdrawResponse = WithdrawResponse.newBuilder().setMessage("Withdraw ").build();
                 com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
                 responseObserver.onNext(empty);
                 responseObserver.onCompleted();
             } catch (WalletBusinessException e) {
                 logger.info("Exception", e);
+                System.out.println(e.getMessage());
                 responseObserver.onError(e);
 
             }
